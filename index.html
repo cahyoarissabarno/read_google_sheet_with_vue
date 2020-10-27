@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+</head>
+<!-- Bootstrap Script -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
+<!-- Scroll Click -->
+<script>
+    $(document).ready(function(){
+		  $("a").on('click', function(event) {
+		    if (this.hash !== "") {
+		      event.preventDefault();
+		      var hash = this.hash;
+		      $('html, body').animate({
+		        scrollTop: $(hash).offset().top
+		      }, 800, function(){
+		        window.location.hash = hash;
+		      },'slow');
+		    } // End if
+		  });
+		});
+</script>
+<body class="bg-light">
+    <!-- Test  -->
+    <!-- <div id="app">
+        <span>Timestamp : {{info.gsx$timestamp.$t}}</span><br>
+        <span>Data ADC : {{info.gsx$dataadc.$t}}</span><br>
+        <span>Data LM 741 : {{info.gsx$data741.$t}}</span><br>
+        <span>Data LM 35 : {{info.gsx$data35.$t}}</span><br>
+        <span>Data Suhu : {{info.gsx$temp.$t}}</span><br>
+        <span>Data LED : {{info.gsx$led.$t}}</span> 
+    </div> -->
+
+    <!-- main -->
+    <div class="container mt-3 bg-light" id="app">
+        <div class="row">
+          <div class="col bg-warning p-5 my-5">
+            <h1 class="display-1 py-5 my-5" style="font-family: Helvetica;"><b>MONITOR</b><br><b class="bg-dark text-warning p-3 rounded">SUHU</b></h1>
+            <!-- get coloumn timestamp -->
+            <small><i>*Last Update Data : {{info.gsx$timestamp.$t}}</i></small> 
+          </div>
+          <div class="col bg-light p-5">
+            <div class="card text-center mx-5 p-5 shadow" style="width: 23rem; height: 26rem; border-radius: 20px;">
+                <div class="card-body">
+                  <h2 class="card-title">Suhu Saat Ini</h2>
+                  <!-- get coloumn temp -->
+                  <h1 class="display-1">{{info.gsx$temp.$t}}°</h1>
+                  <h3 class="card-title mt-4">Celcius</h3>
+                  <a href="#chart" class="btn btn-warning mt-3">Lihat Grafik</a>
+                </div>
+              </div> 
+              <div class="card text-center shadow mx-5 mt-3" style="width: 23rem; border-radius: 20px;">
+                <div class="card-body">
+                  <!-- get coloumn led -->
+                  <h5 v-if="info.gsx$led.$t == 'GREEN'">Status LED : <span class="text-success">{{info.gsx$led.$t}}</span></h5>
+                </div>
+              </div>              
+          </div>
+        </div>
+        <div class="row mt-5" id="chart">
+            <div class="col bg-dark p-5 m-5 shadow" style="border-radius: 20px;">
+                <h1 class="text-warning mb-5">Grafik Suhu :</h1>
+                <!-- display seed graph  -->
+                <iframe class="pl-5 ml-5" width="1000" height="371" seamless frameborder="0" scrolling="no" id="chart" src="PASTE_GRAPH_EMBED_LINK_HERE"></iframe>
+                <!-- EXAMPLE -->
+                <!-- <iframe class="pl-5 ml-5" width="1000" height="371" seamless frameborder="0" scrolling="no" id="chart" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRRknD2ebFu7llzLm_xxxSAMPLExxx0VlefcvxaUmbVD2tKTreWwkoU7i4aYgncgwtG8hr9zrPUOGusiq3TAp2AP/pubchart?oid=936799272&amp;format=interactive"></iframe> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- vue script -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data () {
+                return {
+                interval: null,
+                info: null,
+                }
+            },
+            mounted () {
+                // get data every 100ms
+                this.interval = setInterval(() => {
+                    axios
+                    .get('PASTE_SEED_JSON_LINK_HERE')
+                    //EXAMPLE :
+                    //.get('https://spreadsheets.google.com/feeds/list/1y6ONj_jKsByp03YNrbMxxxSAMPLExxxe19oflL3L-3fY-3fUPdY4/od6/public/values?alt=json')
+                    .then(response => (
+                        data = response.data.feed.entry,
+                        this.info =  data[data.length-1]
+                    ))
+                }, 100 );
+            }
+        })
+
+        // reload graph every 1 minute
+        window.setInterval("reloadIFrame();", 60000);
+        function reloadIFrame() {
+          document.getElementById("chart").src="PASTE_GRAPH_EMBED_LINK_HERE";
+          //EXAMPLE:
+            // document.getElementById("chart").src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRRknD2xxxSAMPLExxxe7llzlefcvxaUmbVD2tKTreWwkoU7i4aYgncgwtG8hr9zrPUOGusiq3TAp2AP/pubchart?oid=936799272&amp;format=interactive";
+        }
+
+    </script>
+</body>
+</html>
