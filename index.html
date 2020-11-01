@@ -28,6 +28,52 @@
 		  });
 		});
 </script>
+<style>
+  @media (max-width: 767.98px) {
+    .title{
+      font-size: 15vw;
+    }
+    .main{
+      width: 18rem; 
+      height: 26rem; 
+      border-radius: 20px;
+    }
+    .led{
+      width: 18rem; 
+      border-radius: 20px;
+    }
+    .chart{
+      width:340px;
+    }
+    .btn-suhu{
+      display: '';
+    }
+  }
+
+  @media (min-width: 768px) {
+    .title{
+      font-size: 5vw;
+    }
+    .main{
+      width: 23rem; 
+      height: 26rem; 
+      border-radius: 20px;
+      margin-left: 60px;
+    }
+    .led{
+      width: 23rem; 
+      border-radius: 20px;
+      margin-left: 60px;
+    }
+    .chart{
+      width:780px;
+    }
+    .btn-suhu{
+      display: none;
+    }
+  }
+
+</style>
 <body class="bg-light">
     <!-- Test  -->
     <!-- <div id="app">
@@ -43,21 +89,22 @@
     <div class="container mt-3 bg-light" id="app">
         <div class="row">
           <div class="col bg-warning p-5 my-5">
-            <h1 class="display-1 py-5 my-5" style="font-family: Helvetica;"><b>MONITOR</b><br><b class="bg-dark text-warning p-3 rounded">SUHU</b></h1>
-            <!-- get coloumn timestamp -->
-            <small><i>*Last Update Data : {{info.gsx$timestamp.$t}}</i></small> 
+            <p class="py-5 my-5 title" style="font-family: Helvetica;"><b>MONITOR</b><br><b class="bg-dark text-warning p-3 rounded">SUHU</b></p>
+            <a href="#suhu" class="btn btn-outline-dark btn-suhu">Lihat Suhu</a> 
+            <br>
+            <small><i>*Last Update Data : {{info.gsx$timestamp.$t}}</i></small>
           </div>
-          <div class="col bg-light p-5">
-            <div class="card text-center mx-5 p-5 shadow" style="width: 23rem; height: 26rem; border-radius: 20px;">
+          <div class="col bg-light p-5" id="suhu">
+            <div class="card text-center pt-5 shadow main">
                 <div class="card-body">
                   <h2 class="card-title">Suhu Saat Ini</h2>
                   <!-- get coloumn temp -->
                   <h1 class="display-1">{{info.gsx$temp.$t}}°</h1>
                   <h3 class="card-title mt-4">Celcius</h3>
-                  <a href="#chart" class="btn btn-warning mt-3">Lihat Grafik</a>
+                  <button class="btn btn-warning my-3" data-toggle="modal" data-target="#graph">Lihat Grafik</button>
                 </div>
               </div> 
-              <div class="card text-center shadow mx-5 mt-3" style="width: 23rem; border-radius: 20px;">
+              <div class="card text-center shadow mt-3 led">
                 <div class="card-body">
                   <!-- get coloumn led status-->
                   <h5>Status LED : 
@@ -72,16 +119,27 @@
               </div>              
           </div>
         </div>
-        <div class="row mt-5" id="chart">
-            <div class="col bg-dark p-5 m-5 shadow" style="border-radius: 20px;">
-                <h1 class="text-warning mb-5">Grafik Suhu :</h1>
-                <!-- display seed graph  -->
-                <iframe class="pl-5 ml-5" width="1000" height="371" seamless frameborder="0" scrolling="no" id="chart" src="PASTE_GRAPH_EMBED_LINK_HERE"></iframe>
-                <!-- EXAMPLE -->
-                <!-- <iframe class="pl-5 ml-5" width="1000" height="371" seamless frameborder="0" scrolling="no" id="chart" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRRknD2ebFu7llzLm_xxxSAMPLExxx0VlefcvxaUmbVD2tKTreWwkoU7i4aYgncgwtG8hr9zrPUOGusiq3TAp2AP/pubchart?oid=936799272&amp;format=interactive"></iframe> -->
+        <!-- Modal -->
+        <div class="modal fade" id="graph" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Graph</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <iframe class="chart" height="391" seamless frameborder="0" scrolling id="chart" src="PASTE_GRAPH_EMBED_LINK_HERE"></iframe>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
             </div>
+          </div>
         </div>
     </div>
+  </div>
 
     <!-- vue script -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
